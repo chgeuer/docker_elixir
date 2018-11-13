@@ -1,4 +1,6 @@
-FROM alpine:3.8 as erlang-builder
+ARG VERSION_ALPINE
+
+FROM alpine:${VERSION_ALPINE} as erlang-builder
 
 # Important!  Update this no-op ENV variable when this Dockerfile
 # is updated with the current date. It will force refresh of all
@@ -79,7 +81,7 @@ RUN \
       rm /usr/lib/erlang/erts-*/bin/ct_run && \
       apk del --force .erlang-build
 
-FROM alpine:3.8 as erlang
+FROM alpine:${VERSION_ALPINE}  as erlang
 
 ENV REFRESHED_AT=2018-11-12 \
     LANG=en_US.UTF-8 \
