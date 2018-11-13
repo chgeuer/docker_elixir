@@ -1,4 +1,6 @@
 ARG VERSION_ALPINE
+ARG VERSION_ERLANG
+ARG VERSION_ELIXIR
 
 FROM alpine:${VERSION_ALPINE} as erlang-builder
 
@@ -7,7 +9,7 @@ FROM alpine:${VERSION_ALPINE} as erlang-builder
 # of the base images and things like `apt-get update` won't be using
 # old cached versions when the Dockerfile is built.
 ENV REFRESHED_AT=2018-11-12 \
-    ERLANG_VERSION=21.1.1 \
+    ERLANG_VERSION=${VERSION_ERLANG} \
     LANG=en_US.UTF-8 \
     HOME=/opt/app/ \
     # Set this so that CTRL+G works properly
@@ -101,7 +103,7 @@ CMD ["/bin/sh"]
 
 FROM erlang as elixir
 
-ENV ELIXIR_VERSION 1.7.4
+ENV ELIXIR_VERSION ${VERSION_ELIXIR}
 
 RUN apk --no-cache --virtual .elixir-install add wget && \
     wget --no-check-certificate "https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/Precompiled.zip" && \

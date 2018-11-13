@@ -1,6 +1,9 @@
 resources:
 - repo: self
 
+pool:
+  vmImage: 'ubuntu-16.04'
+
 queue:
   name: Hosted Ubuntu 1604
 
@@ -8,7 +11,10 @@ steps:
 - task: Docker@0
   displayName: 'Build an image'
   inputs:
-    buildArguments: 'VERSION_ALPINE=3.8'
+    buildArguments:
+      VERSION_ALPINE: "3.8"
+      VERSION_ERLANG: "21.1.1"
+      VERSION_ELIXIR: "1.7.4"
     includeLatestTag: true
 
 - task: Docker@0
