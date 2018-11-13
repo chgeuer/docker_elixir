@@ -15,7 +15,7 @@ steps:
   displayName: 'Push an image'
   inputs:
     containerregistrytype: 'Container Registry'
-    dockerRegistryConnection: 'dockerhub-chgeuer'
+    dockerRegistryConnection: 'chgeuer-dockerhub'
     action: 'Push an image'
     qualifyImageName: false
     includeLatestTag: true
