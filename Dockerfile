@@ -81,7 +81,7 @@ RUN \
 
 #####################################################################################
 
-FROM alpine:3.8  as erlang
+FROM alpine:3.8 as erlang
 
 ENV REFRESHED_AT=2018-11-12 \
     LANG=en_US.UTF-8 \
@@ -103,9 +103,13 @@ CMD ["/bin/sh"]
 
 FROM erlang as elixir
 
-ENV ELIXIR_VERSION 1.7.4
+ENV ELIXIR_VERSION 1.7.4 \
+    HOME=/opt/app/
 
 RUN \
+    mkdir -p "${HOME}" && \
+    adduser -s /bin/sh -u 1001 -G root -h "${HOME}" -S -D default && \
+    chown -R 1001:0 "${HOME}" && \
     apk --no-cache --virtual .elixir-install add wget && \
     wget --no-check-certificate "https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/Precompiled.zip" && \
     apk del --force .elixir-install && \
@@ -118,20 +122,17 @@ RUN \
     mix local.hex --force && \
     mix local.rebar --force
 
+WORKDIR "${HOME}"
+
 CMD ["/bin/sh"]
 
 #####################################################################################
 
 FROM elixir
 
-ENV HOME=/opt/app/
-
 RUN \
-    mkdir -p "${HOME}" && \
-    adduser -s /bin/sh -u 1001 -G root -h "${HOME}" -S -D default && \
-    chown -R 1001:0 "${HOME}" && \
     apk --update add nodejs nodejs-npm inotify-tools
 
-WORKDIR "${HOME}"
 
 CMD ["/bin/sh"]
+
