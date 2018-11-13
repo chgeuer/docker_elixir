@@ -103,8 +103,10 @@ CMD ["/bin/sh"]
 
 FROM erlang as elixir
 
-ENV ELIXIR_VERSION 1.7.4 \
+ENV ELIXIR_VERSION=1.7.4 \
     HOME=/opt/app/
+
+WORKDIR "${HOME}"
 
 RUN \
     mkdir -p "${HOME}" && \
@@ -122,7 +124,6 @@ RUN \
     mix local.hex --force && \
     mix local.rebar --force
 
-WORKDIR "${HOME}"
 
 CMD ["/bin/sh"]
 
