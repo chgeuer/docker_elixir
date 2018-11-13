@@ -91,7 +91,7 @@ RUN echo "@main http://dl-cdn.alpinelinux.org/alpine/v3.8/main" >> /etc/apk/repo
     echo "@community http://dl-cdn.alpinelinux.org/alpine/v3.8/community" >> /etc/apk/repositories && \
     echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
     apk --update add ncurses-libs openssl && \
-    for F in erl erlc run_erl to_erl; do \
+    for F in ct_run dialyzer epmd erl erlc escript run_erl start_erl to_erl typer; do \
       ln -s /usr/lib/erlang/bin/${F} /usr/bin/${F}; \
     done
 
