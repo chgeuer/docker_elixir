@@ -8,10 +8,7 @@ steps:
 - task: Docker@0
   displayName: 'Build an image'
   inputs:
-    buildArguments:
-      - "VERSION_ALPINE=3.8"
-      - "VERSION_ERLANG=21.1.1"
-      - "VERSION_ELIXIR=1.7.4"
+    buildArguments: "VERSION_ALPINE=3.8, VERSION_ERLANG=21.1.1, VERSION_ELIXIR=1.7.4"
     includeLatestTag: true
 
 - task: Docker@0
