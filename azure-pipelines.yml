@@ -1,0 +1,21 @@
+resources:
+- repo: self
+
+queue:
+  name: Hosted Ubuntu 1604
+
+steps:
+- task: Docker@0
+  displayName: 'Build an image'
+  inputs:
+    buildArguments: 'VERSION_ALPINE=3.8'
+    includeLatestTag: true
+
+- task: Docker@0
+  displayName: 'Push an image'
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryConnection: 'dockerhub-chgeuer'
+    action: 'Push an image'
+    qualifyImageName: false
+    includeLatestTag: true
