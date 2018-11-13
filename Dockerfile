@@ -1,15 +1,11 @@
-ARG VERSION_ALPINE
-ARG VERSION_ERLANG
-ARG VERSION_ELIXIR
-
-FROM alpine:${VERSION_ALPINE} as erlang-builder
+FROM alpine:3.8 as erlang-builder
 
 # Important!  Update this no-op ENV variable when this Dockerfile
 # is updated with the current date. It will force refresh of all
 # of the base images and things like `apt-get update` won't be using
 # old cached versions when the Dockerfile is built.
 ENV REFRESHED_AT=2018-11-12 \
-    ERLANG_VERSION=${VERSION_ERLANG} \
+    ERLANG_VERSION=21.1.1 \
     LANG=en_US.UTF-8 \
     HOME=/opt/app/ \
     # Set this so that CTRL+G works properly
@@ -83,7 +79,9 @@ RUN \
       rm /usr/lib/erlang/erts-*/bin/ct_run && \
       apk del --force .erlang-build
 
-FROM alpine:${VERSION_ALPINE}  as erlang
+#####################################################################################
+
+FROM alpine:3.8  as erlang
 
 ENV REFRESHED_AT=2018-11-12 \
     LANG=en_US.UTF-8 \
@@ -101,11 +99,14 @@ RUN echo "@main http://dl-cdn.alpinelinux.org/alpine/v3.8/main" >> /etc/apk/repo
 
 CMD ["/bin/sh"]
 
+#####################################################################################
+
 FROM erlang as elixir
 
-ENV ELIXIR_VERSION ${VERSION_ELIXIR}
+ENV ELIXIR_VERSION 1.7.4
 
-RUN apk --no-cache --virtual .elixir-install add wget && \
+RUN \
+    apk --no-cache --virtual .elixir-install add wget && \
     wget --no-check-certificate "https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/Precompiled.zip" && \
     apk del --force .elixir-install && \
     mkdir -p /usr/lib/elixir && \
@@ -119,6 +120,18 @@ RUN apk --no-cache --virtual .elixir-install add wget && \
 
 CMD ["/bin/sh"]
 
+#####################################################################################
+
 FROM elixir
 
-RUN  apk --update add nodejs nodejs-npm inotify-tools
+ENV HOME=/opt/app/
+
+RUN \
+    mkdir -p "${HOME}" && \
+    adduser -s /bin/sh -u 1001 -G root -h "${HOME}" -S -D default && \
+    chown -R 1001:0 "${HOME}" && \
+    apk --update add nodejs nodejs-npm inotify-tools
+
+WORKDIR "${HOME}"
+
+CMD ["/bin/sh"]
